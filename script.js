@@ -74,3 +74,10 @@ document.querySelector('button[name=submit]').addEventListener('click',function(
     console.log("Score: ",score);
 
 })
+function success(){
+swal({
+    title: "YAY!! Quiz Submitted",
+    icon: "success",
+    button: "Okay",
+  });
+}
