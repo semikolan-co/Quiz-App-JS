@@ -1,83 +1,103 @@
-var questions = [
+const quizData = [
     {
-        "question":"What is the capital of India?",
-        "options":["Delhi","Mumbai","Chennai","Kolkata"],
-        "answer":"Delhi"
-    },
-    {
-        "question":"What is the capital of USA?",
-        "options":["New York","Washington","Chicago","Los Angeles"],
-        "answer":"Washington"
-    },
-    {
-        "question":"What is the capital of Australia?",
-        "options":["Sydney","Melbourne","Brisbane","Perth"],
-        "answer":"Sydney"
-    },
-    {
-        "question":"What is the capital of Canada?",
-        "options":["Ottawa","Toronto","Vancouver","Montreal"],
-        "answer":"Ottawa"
-    },
-    {
-        "question":"What is the capital of Germany?",
-        "options":["Berlin","Hamburg","Munich","Frankfurt"],
-        "answer":"Berlin"
-    },
+       question: 'What is the capital of India?',
+       a: 'Delhi',
+       b: 'Mumbai',
+       c: 'Chennai',
+       d: 'Kolkata',
+       correct: 'a'
+    }, {
+        question: 'What is the capital of USA?',
+        a: 'New York',
+        b: 'Washington',
+        c: 'Chicago',
+        d: 'Los Angeles',
+       correct: 'b'
+    }, {
+        question: 'What is the capital of Australia?',
+        a: 'Sydney',
+        b: 'Melbourne',
+        c: 'Brisbane',
+        d: 'Perth',
+       correct: 'a'
+    }, {
+        question: 'What is the capital of Canada?',
+        a: 'Ottawa',
+        b: 'Toronto',
+        c: 'Vancouver',
+        d: 'Montreal',
+       correct: 'a'
+    }, {
+        question: 'What is the capital of Germany?',
+        a: 'Berlin',
+        b: 'Hamburg',
+        c: 'Munich',
+        d: 'Frankfurt',
+       correct: 'a'
+    }
 ];
 
+const quiz = document.getElementById("quiz");
+const answerEls = document.querySelectorAll(".answer");
+const questionE1 = document.getElementById("question");
+const a_text = document.getElementById("a_text"); 
+const b_text = document.getElementById("b_text"); 
+const c_text = document.getElementById("c_text"); 
+const d_text = document.getElementById("d_text");
+const submitBtn = document.getElementById("submit");
 
-quizbox = document.getElementById("quizbox");
-quizbox.innerHTML = "";
-questions.forEach((question,index) => {
-    var options = ''
-    question.options.forEach((option,i) => {
-        options += `                <li><label><input type="radio" name="opt-${index}" value="${option}"> ${option}</label></li>
+let currentQuiz = 0;
+let score = 0;
 
-        `
-    })
-    quizbox.innerHTML += `<div class="quizdiv">
-    <h4>Q ${index+1}) ${question.question}</h4>
-    <ul>
-    ${options}
-      
-    </ul>
-  </div>`;
-});
+loadQuiz();
 
-document.querySelector('button[name=submit]').addEventListener('click',function(){
-    // alert('Quiz Submitted')
-    var score = 0;
-    var answers = [];
-    var quizdiv = document.querySelectorAll('.quizdiv');
-    quizdiv.forEach((div,index) => {
-        var answer = div.querySelector('input[type=radio]:checked')
-        if(answer){
-            answers.push(answer.value);
-            if(answer.value == questions[index].answer){
-                score+=1;
-                div.style.background = '#77dd77';
-            }else{
-                div.style.background = '#dd7777';
-            }
-        }else{
-            answers.push(null)
-        }
-    })
-    var messagediv = document.getElementById('message');
-    if(score==questions.length){
-        messagediv.innerHTML = `<h3>You got all the answers correct!</h3>`;
-    }else{
-        messagediv.innerHTML = `<h3>You got ${score} out of ${questions.length} correct!</h3>`;
-    }
-    console.log("Answers: ",answers);
-    console.log("Score: ",score);
+function loadQuiz() {
+    deselectAnswers();
 
-})
-function success(){
-swal({
-    title: "YAY!! Quiz Submitted",
-    icon: "success",
-    button: "Okay",
-  });
+    const currentQuizData = quizData[currentQuiz];
+    
+    questionE1.innerText = currentQuizData.question;
+    a_text.innerText = currentQuizData.a;
+    b_text.innerText = currentQuizData.b;
+    c_text.innerText = currentQuizData.c;
+    d_text.innerText = currentQuizData.d;
 }
+
+function getSelected() {
+  
+    let answer = undefined;
+
+    answerEls.forEach((answerEl) => {
+        if(answerEl.checked) {
+            answer = answerEl.id;
+        }
+    });
+
+    return answer;
+}
+
+function deselectAnswers(){
+    answerEls.forEach((answerEl) => {
+        answerEl.checked = false;
+    });
+}
+
+submitBtn.addEventListener("click", () => {
+    const answer = getSelected();
+  
+
+    if(answer) {
+        if (answer === quizData[currentQuiz].correct) {
+            score++;
+        }
+
+        currentQuiz++;
+        if(currentQuiz < quizData.length) {
+            loadQuiz();
+        } else {
+            quiz.innerHTML = `<h2>You answered correctly at ${score}/${quizData.length} questions.</h2> 
+            
+            <button onclick="location.reload()">Try Again</button>`;
+        }
+       }
+});
